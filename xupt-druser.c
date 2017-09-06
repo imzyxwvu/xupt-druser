@@ -3,17 +3,38 @@
 #include <time.h>
 #include <string.h>
 
-// from pppd.h
-#define MAXNAMELEN	256	/* max length of hostname or name for auth */
-extern char user[MAXNAMELEN];/* Our name for authenticating ourselves */
-void info __P((char *, ...)); /* log an informational message */
+#include <pppd/pppd.h>
 
-char pppd_version[] = "2.4.7";
+char pppd_version[] = VERSION;
+
+extern option_t auth_options[];
+
+int update_user(char **argv)
+{
+	char *arguser = *argv;
+	if(strcmp(*argv + 8, "@telecom") == 0 ||
+	   strcmp(*argv + 8, "@unicom") == 0) {
+		strcpy(user, "\r\n");
+		strcpy(user + 2, *argv);
+	} else {
+		strcpy(user, *argv);
+	}
+	return 1;
+}
 
 void plugin_init(void)
 {
-	char newuser[MAXNAMELEN] = {'\r', '\n', 0};
-	strcpy(newuser + 2, user);
-	strcpy(user, newuser);
-	info("xupt-druser: OK!");
+	option_t *authopt = auth_options;
+	while(authopt->name) {
+		if(strcmp(authopt->name, "user") == 0) {
+			authopt->type = o_special;
+			authopt->flags = OPT_PRIO | OPT_A2STRVAL;
+			authopt->addr = update_user;
+			authopt->addr2 = user;
+			break;
+		}
+		authopt++;
+	}
+	char newuser[256];
+
 }
