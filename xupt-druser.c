@@ -11,8 +11,9 @@ extern option_t auth_options[];
 
 int update_user(char **argv)
 {
-	if(strcmp(*argv + 8, "@telecom") == 0 ||
-	   strcmp(*argv + 8, "@unicom") == 0) {
+	if(strlen(*argv) > 8 && (
+	   strcmp(*argv + 8, "@telecom") == 0 ||
+	   strcmp(*argv + 8, "@unicom") == 0)) {
 		strcpy(user, "\r\n");
 		strcpy(user + 2, *argv);
 	} else {
