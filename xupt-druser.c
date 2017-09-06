@@ -11,7 +11,6 @@ extern option_t auth_options[];
 
 int update_user(char **argv)
 {
-	char *arguser = *argv;
 	if(strcmp(*argv + 8, "@telecom") == 0 ||
 	   strcmp(*argv + 8, "@unicom") == 0) {
 		strcpy(user, "\r\n");
@@ -35,6 +34,4 @@ void plugin_init(void)
 		}
 		authopt++;
 	}
-	char newuser[256];
-
 }
